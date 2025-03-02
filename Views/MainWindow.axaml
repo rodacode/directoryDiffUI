@@ -1,0 +1,71 @@
+<Window xmlns="https://github.com/avaloniaui"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:vm="using:DirectoryDiffUI.ViewModels"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+  x:Class="DirectoryDiffUI.Views.MainWindow"
+  x:DataType="vm:MainWindowViewModel"
+  Icon="/Assets/avalonia-logo.ico"
+  Title="Directory Diff">
+
+  <Design.DataContext>
+    <vm:MainWindowViewModel />
+  </Design.DataContext>
+
+  <Grid RowDefinitions="Auto,Auto,*,Auto" Margin="20">
+    <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" Margin="0,5">
+      <TextBlock Grid.Column="0" Text="Directory 1:" VerticalAlignment="Center" Margin="0,0,10,0" />
+      <TextBox Grid.Column="1" Text="{Binding Comparison.Directory1}"
+        Watermark="Enter or paste first directory path" />
+      <Button Grid.Column="2" Content="Verify"
+        Command="{Binding Comparison.VerifyDirectory1Command}" Margin="10,0,0,0" />
+    </Grid>
+
+    <Grid Grid.Row="1" ColumnDefinitions="Auto,*,Auto" Margin="0,5">
+      <TextBlock Grid.Column="0" Text="Directory 2:" VerticalAlignment="Center" Margin="0,0,10,0" />
+      <TextBox Grid.Column="1" Text="{Binding Comparison.Directory2}"
+        Watermark="Enter or paste second directory path" />
+      <Button Grid.Column="2" Content="Verify"
+        Command="{Binding Comparison.VerifyDirectory2Command}" Margin="10,0,0,0" />
+    </Grid>
+
+    <TabControl Grid.Row="2" Margin="0,10">
+      <TabItem Header="Only in Directory 1">
+        <ListBox ItemsSource="{Binding Comparison.OnlyInFirst}" />
+      </TabItem>
+      <TabItem Header="Only in Directory 2">
+        <ListBox ItemsSource="{Binding Comparison.OnlyInSecond}" />
+      </TabItem>
+      <TabItem Header="Different Files">
+        <ListBox ItemsSource="{Binding Comparison.Different}">
+          <ListBox.ItemTemplate>
+            <DataTemplate>
+              <StackPanel Margin="5">
+                <TextBlock Text="{Binding FileName}" FontWeight="Bold" />
+                <TextBlock Text="{Binding SizeDifference}" Margin="20,2,0,0" />
+                <TextBlock Text="{Binding DateDifference}" Margin="20,2,0,0" />
+                <TextBlock Text="{Binding ContentDifference}" Margin="20,2,0,0" />
+              </StackPanel>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+      </TabItem>
+      <TabItem Header="Identical Files">
+        <ListBox ItemsSource="{Binding Comparison.Identical}" />
+      </TabItem>
+    </TabControl>
+
+    <Grid Grid.Row="3" ColumnDefinitions="Auto,*,Auto" Margin="0,5">
+      <CheckBox Grid.Column="0" Content="Compare file contents"
+        IsChecked="{Binding Comparison.CompareContent}" />
+      <TextBlock Grid.Column="1" Text="{Binding Comparison.StatusMessage}"
+        VerticalAlignment="Center" Margin="10,0" />
+      <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="10">
+        <TextBlock Text="{Binding Comparison.ResultSummary}" VerticalAlignment="Center" />
+        <Button Content="Compare" Command="{Binding Comparison.CompareDirectoriesCommand}"
+          IsEnabled="{Binding !Comparison.IsComparing}" />
+      </StackPanel>
+    </Grid>
+  </Grid>
+</Window>
